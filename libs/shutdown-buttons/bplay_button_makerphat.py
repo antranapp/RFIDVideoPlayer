@@ -30,8 +30,8 @@ def on_released():
         print("should shutdown")
         os.system("sudo shutdown -h now")
 
-button.when_pressed = on_released
-button.when_released = on_pressed
+button.when_pressed = on_pressed
+button.when_released = on_released
 
 while True:
     time.sleep(1)
