@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import sys
 from random import randint
 import SimpleMFRC522
 import time
@@ -7,7 +8,6 @@ import os
 import logging
 import random
 import glob
-import RPi.GPIO as GPIO
 from gpiozero import Buzzer
 
 is_starting_player = False
@@ -106,12 +106,11 @@ def repeatBeep(buzzer, times):
     for i in range(times):
         beep(buzzer)
 
-        
+canPlay = True
+
 #program start
 
 logging.basicConfig(level=logging.DEBUG)
-
-GPIO.setmode(GPIO.BCM)
 
 reader = SimpleMFRC522.SimpleMFRC522()
 buzzer = Buzzer(26)
@@ -123,7 +122,7 @@ repeatBeep(buzzer, 2)
 print("Begin Player")
 
 try:
-	while True: 
+	while canPlay: 
                 if is_starting_player: continue
 
 		proccount = isplaying()
@@ -200,5 +199,7 @@ try:
 
 
 except KeyboardInterrupt:
-	GPIO.cleanup()
 	print("\nAll Done")
+
+print("End!")
+sys.exit(0)
