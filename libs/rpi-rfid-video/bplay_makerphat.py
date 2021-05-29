@@ -35,7 +35,7 @@ def playmovie(video, aspect = 0):
 
 	global myprocess
 	global directory
-        global is_starting_player
+    global is_starting_player
 
 	logging.debug('linux: omxplayer %s' % video)
 
