@@ -2,17 +2,22 @@
 
 import RPi.GPIO as GPIO
 import SimpleMFRC522
+import sys
 
 reader = SimpleMFRC522.SimpleMFRC522()
 
-print('Scan Card')
+text = sys.argv[1]
 
-text = raw_input('New data:')
+try:
 
-if len(text) > 48:
-    text = raw_input('Data was too long, shorten it and type it here:')
+    print('Scan Card')
+    print("New data: %s" % text)
 
-print("Now place your tag to write")
+    print("Now place your tag to write")
 
-reader.write(text)
-print("Written")
+    reader.write(text)
+    print("Written")
+
+except KeyboardInterrupt:
+    GPIO.cleanup()
+    print("\nClean Exit")

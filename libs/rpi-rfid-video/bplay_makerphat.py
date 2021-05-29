@@ -13,29 +13,29 @@ from gpiozero import Buzzer
 is_starting_player = False
 
 def isPlayerPlaying():
-    proccount = isplaying()
-    print(proccount)
-    return proccount != 1 and proccount != 0
+	proccount = isplaying()
+	print(proccount)
+	return proccount != 1 and proccount != 0
 
 def waitForPlayer():
-    global is_starting_player
+	global is_starting_player
 
-    while True:
-        if isPlayerPlaying():
-            break
-        print("Waiting for player to start ....")
-        time.sleep(3)
+	while True:
+		if isPlayerPlaying():
+			break
+		print("Waiting for player to start ....")
+		time.sleep(3)
 
-    is_starting_player = False
-    print("Done waiting....")
+	is_starting_player = False
+	print("Done waiting....")
 
 def playmovie(video, aspect = 0):
 
-	"""plays a video."""
+	"""Start playing a video."""
 
 	global myprocess
 	global directory
-    global is_starting_player
+	global is_starting_player
 
 	logging.debug('linux: omxplayer %s' % video)
 
@@ -58,7 +58,7 @@ def playmovie(video, aspect = 0):
 	#if your video file is already in 4:3, you don't need to set this flag.
 		myprocess = subprocess.Popen(['omxplayer','--win','250,0,1650,1050',directory + video],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
 	
-        waitForPlayer()
+		waitForPlayer()
 
 def playaudio(audio):
 
@@ -82,7 +82,7 @@ def playaudio(audio):
 		
 	myprocess = subprocess.Popen(['omxplayer','-o','hdmi',directory + audio],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
 
-        waitForPlayer()
+	waitForPlayer()
 
 def isplaying():
 
@@ -97,14 +97,14 @@ def isplaying():
 		return proccount
 
 def beep(buzzer):
-    buzzer.on()
-    time.sleep(0.1)
-    buzzer.off()
-    time.sleep(0.1)
+	buzzer.on()
+	time.sleep(0.1)
+	buzzer.off()
+	time.sleep(0.1)
 
 def repeatBeep(buzzer, times):
     for i in range(times):
-        beep(buzzer)
+		beep(buzzer)
 
 canPlay = True
 
@@ -123,7 +123,7 @@ print("Begin Player")
 
 try:
 	while canPlay: 
-                if is_starting_player: continue
+		if is_starting_player: continue
 
 		proccount = isplaying()
 
@@ -136,8 +136,8 @@ try:
 		logging.debug("Waiting for ID to be scanned")
 		id, movie_name = reader.read()
 
-                # Acknowledge the id read
-                beep(buzzer)
+		# Acknowledge the id read
+		beep(buzzer)
 
 		logging.debug("ID: %s" % id)
 		logging.debug("Movie Name: %s" % movie_name)
@@ -145,7 +145,7 @@ try:
 		movie_name = movie_name.rstrip()
 
 		if current_movie_id != id:
-                        is_starting_player = True
+			is_starting_player = True
 
 			logging.debug('New Movie')
 			#this is a check in place to prevent omxplayer from restarting video if ID is left over the reader.
@@ -190,10 +190,8 @@ try:
 			proccount = isplaying()
 
 			if proccount != 1 and proccount != 0:
-
 				if elapsed_time > 0.6:
 					#pause, unpause movie
-
 					logging.debug('Pausing movie - or - Playing movie')
 					myprocess.stdin.write("p")
 

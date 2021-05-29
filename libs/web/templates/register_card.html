@@ -1,5 +1,6 @@
 <html>
 <body>
+    {{ status }}
     <form action="{{ url_for('register_card') }}" method="post">
         <input type="hidden" name="filename" value="{{ filename }}"><br>
         <input type="submit" value="Start scanning card">

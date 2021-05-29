@@ -1,0 +1,12 @@
+[Unit]
+Description=RFIDServer
+After=network-online.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/libs/web
+ExecStart=/usr/bin/python /home/pi/libs/web/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
