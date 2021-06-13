@@ -42,11 +42,8 @@ def playmovie(video, aspect = 0):
 	proccount = isplaying()
 
 	if proccount == 1 or proccount == 0:
-
 		logging.debug('No videos playing, so play video')
-
 	else:
-
 		logging.debug('Video already playing, so quit current video, then play')
 		myprocess.communicate(b"q")
 		
@@ -54,8 +51,8 @@ def playmovie(video, aspect = 0):
 		myprocess = subprocess.Popen(['omxplayer','-o', 'hdmi', directory + video],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
 	
 	else:
-	#This is for videos that come in 16:9 that should be played as 4:3
-	#if your video file is already in 4:3, you don't need to set this flag.
+		# This is for videos that come in 16:9 that should be played as 4:3
+		# if your video file is already in 4:3, you don't need to set this flag.
 		myprocess = subprocess.Popen(['omxplayer','--win','250,0,1650,1050',directory + video],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE, close_fds=True)
 	
 		waitForPlayer()
@@ -72,11 +69,8 @@ def playaudio(audio):
 	proccount = isplaying()
 
 	if proccount == 1 or proccount == 0:
-
 		logging.debug('Player is not active, so start the player now')
-
 	else:
-
 		logging.debug('Player is active, so quit current player, then play')
 		myprocess.communicate(b"q")
 		
@@ -125,10 +119,7 @@ try:
 	while canPlay: 
 		if is_starting_player: continue
 
-		proccount = isplaying()
-
-		if proccount == 1 or proccount == 0:
-
+		if isPlayerPlaying():
 			current_movie_id = long(10)
 			
 		start_time = time.time()
@@ -144,52 +135,28 @@ try:
 
 		movie_name = movie_name.rstrip()
 
+		# This is a check in place to prevent omxplayer from restarting video if ID is left over the reader.
+		# better to use id than movie_name as there can be a problem reading movie_name occasionally
 		if current_movie_id != id:
 			is_starting_player = True
 
 			logging.debug('New Movie')
-			#this is a check in place to prevent omxplayer from restarting video if ID is left over the reader.
-			#better to use id than movie_name as there can be a problem reading movie_name occasionally
 			
-
 			if movie_name.endswith(('.mp4', '.avi', '.m4v','.mkv')):
-				current_movie_id = id 	#we set this here instead of above bc it may mess up on first read
+				current_movie_id = id 	# we set this here instead of above bc it may mess up on first read
 				logging.debug("playing: omxplayer -o hdmi %s" % movie_name)
 				playmovie(movie_name)
 
 			elif movie_name.endswith(('.mp3')):
-				current_movie_id = id 	#we set this here instead of above bc it may mess up on first read
+				current_movie_id = id 	# we set this here instead of above bc it may mess up on first read
 				logging.debug("playing: omxplayer -o hdmi %s" % movie_name)
 				playaudio(movie_name)
 
-			elif 'folder' in movie_name:
-			#randomly plays video files from a certain folder
-				current_movie_id = id
-				movie_directory = movie_name.replace('folder',"") 
-				movie_name = random.choice(glob.glob(os.path.join(directory + movie_directory, '*')))
-				movie_name = movie_name.replace(directory,"")
-
-				logging.debug("randomly playing: omxplayer %s" % movie_name)
-				playmovie(movie_name)
-
-
-			elif 'fourthree' in movie_name:
-			#video files randomly played from a folder and that should be played in 4:3 aspect ratio
-				current_movie_id = id
-				movie_directory = movie_name.replace('fourthree',"")
-				movie_name = random.choice(glob.glob(os.path.join(directory + movie_directory, '*')))
-				movie_name = movie_name.replace(directory,"")
-
-				logging.debug("randomly playing: omxplayer %s" % movie_name)
-				playmovie(movie_name,1)
-	
 		else:
-
 			end_time = time.time()
 			elapsed_time = end_time - start_time
-			proccount = isplaying()
 
-			if proccount != 1 and proccount != 0:
+			if isPlayerPlaying():
 				if elapsed_time > 0.6:
 					#pause, unpause movie
 					logging.debug('Pausing movie - or - Playing movie')

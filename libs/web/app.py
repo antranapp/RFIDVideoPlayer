@@ -20,11 +20,9 @@ def download_video():
     youtube_url = request.form['youtube_url']
     hash_object = hashlib.md5(youtube_url.encode('utf-8'))
     hash_string = hash_object.hexdigest() + '.mp4'
-    #hash_string = "b56e60c61d72efd4022b7949f9b3a880.mp4"
     command_download = "youtube-dl -o '{0}' -f 22 '{1}'".format(hash_string, youtube_url)
     try:
         status = subprocess.check_output([command_download], shell=True)
-        #status = "mock"
         move(hash_string, videos_path + hash_string)
         return render_template('register_card.html', status = status, filename = hash_string)
     except subprocess.CalledProcessError as e:
@@ -34,8 +32,8 @@ def download_video():
 def register_card():
     filename = request.form['filename']
     print(filename, file=sys.stdout)
-    os.system('python write.py ' + filename)
-    return "Done"
+    output = subprocess.check_output('python write.py ' + filename, shell=True, stderr=subprocess.STDOUT)
+    return output
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

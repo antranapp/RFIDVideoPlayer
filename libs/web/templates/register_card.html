@@ -1,9 +1,9 @@
 <html>
 <body>
     {{ status }}
-    <form action="{{ url_for('register_card') }}" method="post">
+    <form action="{{ url_for('register_card') }}" method="post" onSubmit="document.getElementById('submit').disabled=true;">
         <input type="hidden" name="filename" value="{{ filename }}"><br>
-        <input type="submit" value="Start scanning card">
+        <input type="submit" id="submit" value="Start scanning card">
     </form>
 </body>
 </html>
